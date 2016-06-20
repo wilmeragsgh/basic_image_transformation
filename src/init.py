@@ -81,3 +81,11 @@ if imageMode == 'P':
     img = Image.frombytes(imageMode,(infoHeader['width'],infoHeader['height']),imageData)
  
 img.show()
+
+
+
+# placeholder for rotation
+angle = [90,180,360]
+for a in angle:
+    rot = img.rotate(a, expand=1)
+
