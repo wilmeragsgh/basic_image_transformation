@@ -1,7 +1,7 @@
 # PDI homework-1
 Code related to the first homework of Digital Image Processing.
 Description of the submission at: 
-[Homework 1](http://ccg.ciens.ucv.ve/~esmitt/pdi/I-2016/homework1.pdf)
+[Homework 1]('https://github.com/wilmeragsgh/pdi_homework-1/blob/master/doc/homework1.pdf')
 
 ## Getting Started
 
@@ -9,63 +9,38 @@ These instructions will get you a copy of the project up and running on your loc
 
 ### Prerequisities
 
-What things you need to install the software and how to install them
+The following conditions are the ones that ensure you could run this software, if you are aware of equivalent conditions, feel free of trying to run it on them, also you could contribute by sharing your environment with us and it will be very appreciate it. 
+
 
 ```
-Give examples
-```
-
-### Installing
-
-A step by step series of examples that tell you have to get a development env running
-
-Stay what the step will be
+apt-get install xorg libx11-dev
+apt-get install fftw3 
 
 ```
-Give the example
-```
 
-And repeat
+## Installation
 
 ```
-until finished
-```
-
-End with an example of getting some data out of the system or using it for a little demo
-
-## Running the tests
-
-Explain how to run the automated tests for this system
-
-### Break down into end to end tests
-
-Explain what these tests test and why
-
-```
-Give an example
-```
-
-### And coding style tests
-
-Explain what these tests test and why
-
-```
-Give an example
+cd $HOME/Downloads/
+git clone https://github.com/wilmeragsgh/pdi_homework-1.git
+cd pdi_homework-1.git
 ```
 
 ## Deployment
 
+```
+R -e "shiny::runApp('$HOME/Downloads/pdi_homework-1/app')"
+```
 Add additional notes about how to deploy this on a live system
+
+To get the system up running
 
 ## Built With
 
-* Python 2.7 
-* Maven - Maybe
-* Atom - ergaerga
-
-## Versioning
-
-We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/your/project/tags). 
+* x86_64-pc-linux-gnu (64-bit)
+* R version 3.3.0 (2016-05-03) -- "Supposedly Educational"
+* RStudio version 0.99.892
+* Shiny(R package) version 0.13.2
 
 ## Authors
 
