@@ -11,15 +11,13 @@ ui <- shinyUI(fluidPage(
         background-image: url('texturebg.png');
         padding: 20px"),
     br(),
-  sidebarLayout(
+    sidebarLayout(
     sidebarPanel(
       fileInput(inputId = 'files', 
                 label = 'Select an Image',
                 accept=c('image/bmp', 'image/bmp','.bmp'))
-    ),
-    mainPanel(
+    ),mainPanel(
         tableOutput('hdr'),
-      uiOutput('images')
-    )
-  )
+        uiOutput('images')
+    ))
 ))
