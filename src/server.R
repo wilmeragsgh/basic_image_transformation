@@ -1,5 +1,5 @@
 options(shiny.maxRequestSize=30*1024^2)
-
+library('imager')
 shinyServer(function(input, output) {
       output$files <- renderTable(input$files)
       
@@ -8,7 +8,7 @@ shinyServer(function(input, output) {
         arc <- file(files$datapath,'rb')
         files$datapath <- gsub("\\\\", "/", files$datapath)
         headr <- c()
-        headr <- cbind(headr,firm = readBin(arc,what = integer(),size = 2))
+        readBin(arc,what = integer(),size = 2)
         headr <- cbind(headr,filesize = readBin(arc,what = integer(),size = 4))
         readBin(arc,what = integer(),size = 4) #skipping reserved
         readBin(arc,what = integer(),size = 4) #skipping offset 
@@ -25,9 +25,29 @@ shinyServer(function(input, output) {
         headr <- cbind(headr,impColors = readBin(arc,what = integer(),size = 4))
         close(arc)
         output$hdr <- renderTable(as.data.frame(headr))
+        
+#        img <- matrix(nrow = headr[,'height'],ncol = headr[,'width'])
+#        for(h in 1:headr['height']){
+#            for(w in 1:headr['width']){
+#                img[h,w] <- readBin(arc,what = integer(),size = headr['bitsPerPixel'])
+#            }
+#        }
         files
       })
-      
+#      
+#      negativeTrans <- eventReactive(input$negativeT,{
+#          width <- headr['width']
+#          height <- headr['height']
+#          outfile <- tempfile(fileext = '.bmp')
+#          bmp(outfile,width=width,height = height)
+#          image(matrix(mapply(function(x) x + 1,img),nrow = headr['height']))
+#          dev.off()
+#      })
+#      
+#      output$imgT <- renderImage({
+#          negativeTrans()
+#      })
+#
       output$images <- renderUI({
         if(is.null(input$files)) return(NULL)
         image_output_list <- 
@@ -40,6 +60,7 @@ shinyServer(function(input, output) {
         
         do.call(tagList, image_output_list)
       })
+      
       
       observe({
         if(is.null(input$files)) return(NULL)
