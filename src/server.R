@@ -25,7 +25,6 @@ shinyServer(function(input, output) {
         headr <- cbind(headr,impColors = readBin(arc,what = integer(),size = 4))
         close(arc)
         output$hdr <- renderTable(as.data.frame(headr))
-        
 #        img <- matrix(nrow = headr[,'height'],ncol = headr[,'width'])
 #        for(h in 1:headr['height']){
 #            for(w in 1:headr['width']){
@@ -34,6 +33,14 @@ shinyServer(function(input, output) {
 #        }
         files
       })
+      output$exportImage <- downloadHandler(
+          filename = function() { 
+              paste(input$files, '.bmp', sep='') 
+          },
+          content = function(file) {
+              bmp()
+          }
+      )
 #      
 #      negativeTrans <- eventReactive(input$negativeT,{
 #          width <- headr['width']
