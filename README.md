@@ -19,19 +19,13 @@ apt-get install fftw3
 
 ```
 
-## Installation
-
-```
-cd $HOME/Downloads/
-git clone https://github.com/wilmeragsgh/pdi_homework-1.git
-cd pdi_homework-1.git
-```
-
 ## Deployment
 
+
 ```
-R -e "shiny::runApp('$HOME/Downloads/pdi_homework-1/app')"
+R -e "shiny::runGitHub('pdi_homework-1','wilmeragsgh',subdir = 'src')"
 ```
+
 Add additional notes about how to deploy this on a live system
 
 To get the system up running

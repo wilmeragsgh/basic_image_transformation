@@ -30,6 +30,8 @@ shinyServer(function(input, output) {
         headr <- cbind(headr,impColors = readBin(arc,what = integer(),size = 4))
         close(arc)
         output$hdr <- renderTable(as.data.frame(headr))
+        rm(headr)
+        rm(arc)
         files
     })
     
@@ -54,7 +56,7 @@ shinyServer(function(input, output) {
                   renderImage({
                       list(src = files()$datapath[1],
                            alt = "Image failed to render")
-                  }, deleteFile = FALSE)
+                  }, deleteFile = F)
           })
       })
 
@@ -64,12 +66,11 @@ shinyServer(function(input, output) {
       observe({
           if(input$reloadInput == 0) return(NULL)
           local({
-              print('nuevo')
               output[['image1']] <- 
                   renderImage({
                       list(src = files()$datapath[1],
                            alt = "Image failed to render")
-                  }, deleteFile = FALSE)
+                  }, deleteFile = F)
           })
       })
 # image negative:
