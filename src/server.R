@@ -1,12 +1,17 @@
-options(shiny.maxRequestSize=30*1024^2)
 library('imager')
+
+options(shiny.maxRequestSize=30*1024^2)
+
 shinyServer(function(input, output) {
-      output$files <- renderTable(input$files)
-      
-      files <- reactive({
+
+# reading image:
+    output$files <- renderTable(input$files)
+    
+    files <- reactive({
         files <- input$files
         arc <- file(files$datapath,'rb')
         files$datapath <- gsub("\\\\", "/", files$datapath)
+        # creating the table:
         headr <- c()
         readBin(arc,what = integer(),size = 2)
         headr <- cbind(headr,filesize = readBin(arc,what = integer(),size = 4))
@@ -25,66 +30,113 @@ shinyServer(function(input, output) {
         headr <- cbind(headr,impColors = readBin(arc,what = integer(),size = 4))
         close(arc)
         output$hdr <- renderTable(as.data.frame(headr))
-#        img <- matrix(nrow = headr[,'height'],ncol = headr[,'width'])
-#        for(h in 1:headr['height']){
-#            for(w in 1:headr['width']){
-#                img[h,w] <- readBin(arc,what = integer(),size = headr['bitsPerPixel'])
-#            }
-#        }
         files
-      })
-      output$exportImage <- downloadHandler(
-          filename = function() { 
-              paste(input$files, '.bmp', sep='') 
-          },
-          content = function(file) {
-              bmp()
-          }
-      )
-#      
-#      negativeTrans <- eventReactive(input$negativeT,{
-#          width <- headr['width']
-#          height <- headr['height']
-#          outfile <- tempfile(fileext = '.bmp')
-#          bmp(outfile,width=width,height = height)
-#          image(matrix(mapply(function(x) x + 1,img),nrow = headr['height']))
-#          dev.off()
-#      })
-#      
-#      output$imgT <- renderImage({
-#          negativeTrans()
-#      })
-#
+    })
+    
       output$images <- renderUI({
         if(is.null(input$files)) return(NULL)
-        image_output_list <- 
-          lapply(1:nrow(files()),
-                 function(i)
-                 {
-                   imagename = paste0("image", i)
-                   imageOutput(imagename)
-                 })
-        
-        do.call(tagList, image_output_list)
+        if(input$reloadInput > 0){
+            image_output_list <- list(imageOutput('image1'))
+            do.call(tagList, image_output_list)  
+        } else
+            if(input$negativeT > 0){
+                image_output_list <- list(imageOutput('image1'))
+                do.call(tagList, image_output_list)  
+            } else
+          image_output_list <- list(imageOutput('image1'))
+          do.call(tagList, image_output_list)
       })
-      
       
       observe({
-        if(is.null(input$files)) return(NULL)
-        for (i in 1:nrow(files()))
-        {
-          print(i)
+          if(is.null(input$files)) return(NULL)
           local({
-            my_i <- i
-            imagename = paste0("image", my_i)
-            print(imagename)
-            output[[imagename]] <- 
-              renderImage({
-                list(src = files()$datapath[my_i],
-                     alt = "Image failed to render")
-              }, deleteFile = FALSE)
+              output[['image1']] <- 
+                  renderImage({
+                      list(src = files()$datapath[1],
+                           alt = "Image failed to render")
+                  }, deleteFile = FALSE)
           })
-        }
+      })
+
+# processing transformation:
+
+# reload image:      
+      observe({
+          if(input$reloadInput == 0) return(NULL)
+          local({
+              print('nuevo')
+              output[['image1']] <- 
+                  renderImage({
+                      list(src = files()$datapath[1],
+                           alt = "Image failed to render")
+                  }, deleteFile = FALSE)
+          })
+      })
+# image negative:
+      observe({
+          if(input$negativeT == 0) return(NULL)
+          local({
+              imgInput <- load.image(input$files$datapath)
+              width <- attributes(imgInput)$dim[1]
+              height <- attributes(imgInput)$dim[2]
+              imgTransf <- grayscale(imgInput)
+              outfile <- paste(
+                  unlist(
+                      strsplit(
+                          tail(
+                              unlist(
+                                  strsplit(input$files$datapath,
+                                           split = '/'
+                                  )
+                              ),
+                              n = 1
+                          ),
+                          split = '.',
+                          fixed = T
+                      )
+                  )[1],
+                  '_Processed',
+                  '.bmp', 
+                  sep='')
+              bmp(outfile,width=width,height = height)
+              plot(imgTransf)
+              dev.off()
+              output[['image1']] <- 
+                  renderImage({
+                      list(src = outfile,
+                           alt = "Image failed to render")
+                  }, deleteFile = FALSE)
+          })
       })
       
+# downloader:
+      output$exportImage <- downloadHandler(
+          filename = function() { 
+              paste(
+                  unlist(
+                      strsplit(
+                          tail(
+                              unlist(
+                                  strsplit(input$files$datapath,
+                                           split = '/'
+                                  )
+                              ),
+                              n = 1
+                          ),
+                          split = '.',
+                          fixed = T
+                      )
+                  )[1],
+                  '_Processed',
+                  '.bmp', 
+                  sep='') 
+          },
+          content = function(file) {
+              imgInput <- load.image(input$files$datapath)
+              bmp(file)
+              plot(imgInput)
+              dev.off()
+          }
+      )
+#/
     })

@@ -38,7 +38,7 @@ ui <- shinyUI(
         hr(),
         tableOutput('hdr'),
         fluidRow(
-            column(4,
+            column(8,
                    offset=1,
                    wellPanel(
                        uiOutput(
@@ -48,6 +48,10 @@ ui <- shinyUI(
                        )
                    ),
             column(2,
+                   actionButton('reloadInput',
+                                'Reload image',
+                                style = 'margin-left: 20%'),
+                   hr(),
                    wellPanel(
                        h5('Negative:',
                           style = 'font-weight: 700; text-align: center'
@@ -81,13 +85,8 @@ ui <- shinyUI(
                            )
                    ),
                    downloadButton('exportImage',
-                                      'Exportar')
-                ),
-             column(4,
-                    wellPanel(
-                        p('imgT')
-                        )
-                    )
+                                      'Export')
+                )
         )
     )
 )
