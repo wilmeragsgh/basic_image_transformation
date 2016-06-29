@@ -1,4 +1,12 @@
 library('imager')
+library('parallel')
+library('Rcpp')
+
+#system('export PKG_CXXFLAGS=`Rscript -e "Rcpp:::CxxFlags()"`')
+#system('export PKG_LIBS=`Rscript -e "Rcpp:::LdFlags()"`')
+
+#system('R CMD SHLIB trial.cpp')
+dyn.load('../build/trial.so')
 
 options(shiny.maxRequestSize=30*1024^2)
 
@@ -10,7 +18,6 @@ shinyServer(function(input, output) {
     files <- reactive({
         files <- input$files
         arc <- file(files$datapath,'rb')
-        files$datapath <- gsub("\\\\", "/", files$datapath)
         # creating the table:
         headr <- c()
         readBin(arc,what = integer(),size = 2)
@@ -30,8 +37,6 @@ shinyServer(function(input, output) {
         headr <- cbind(headr,impColors = readBin(arc,what = integer(),size = 4))
         close(arc)
         output$hdr <- renderTable(as.data.frame(headr))
-        rm(headr)
-        rm(arc)
         files
     })
     
@@ -54,7 +59,7 @@ shinyServer(function(input, output) {
           local({
               output[['image1']] <- 
                   renderImage({
-                      list(src = files()$datapath[1],
+                      list(src = files()$datapath,
                            alt = "Image failed to render")
                   }, deleteFile = F)
           })
@@ -68,45 +73,23 @@ shinyServer(function(input, output) {
           local({
               output[['image1']] <- 
                   renderImage({
-                      list(src = files()$datapath[1],
+                      list(src = files()$datapath,
                            alt = "Image failed to render")
                   }, deleteFile = F)
           })
       })
+#/      
 # image negative:
       observe({
           if(input$negativeT == 0) return(NULL)
           local({
-              imgInput <- load.image(input$files$datapath)
-              width <- attributes(imgInput)$dim[1]
-              height <- attributes(imgInput)$dim[2]
-              imgTransf <- grayscale(imgInput)
-              outfile <- paste(
-                  unlist(
-                      strsplit(
-                          tail(
-                              unlist(
-                                  strsplit(input$files$datapath,
-                                           split = '/'
-                                  )
-                              ),
-                              n = 1
-                          ),
-                          split = '.',
-                          fixed = T
-                      )
-                  )[1],
-                  '_Processed',
-                  '.bmp', 
-                  sep='')
-              bmp(outfile,width=width,height = height)
-              plot(imgTransf)
-              dev.off()
+              print(files()$datapath)
+              print(route <- .Call('readData',files()$datapath))
               output[['image1']] <- 
                   renderImage({
-                      list(src = outfile,
+                      list(src = route,
                            alt = "Image failed to render")
-                  }, deleteFile = FALSE)
+                  }, deleteFile = F)
           })
       })
       

@@ -16,7 +16,7 @@ The following conditions are the ones that ensure you could run this software, i
 apt-get install libtiff-devel fftw-devel
 apt-get install xorg libx11-dev
 apt-get install fftw3 
-
+apt-get install libopencv-dev
 ```
 
 ## Deployment
