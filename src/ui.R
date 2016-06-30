@@ -23,20 +23,52 @@ ui <- shinyUI(
            ),
         br(),
         fluidRow(
-            column(6,
-                   offset = 4,
+            column(5,
+                   offset = 0,
                    sidebarPanel(
-                       width=8,
+                       width=6,
                        style = 'align: center; text-align: center',
                        fileInput(inputId = 'files', 
                            label = 'Select an Image',
                            accept=c('image/bmp', 'image/bmp','.bmp')
-                           )
+                           ),
+                       actionButton('reloadInput',
+                                    'Reload image',
+                                    style = 'margin-left: 2%'),
+                       hr(),
+                       h5('Negative:',
+                          style = 'font-weight: 700; text-align: center'
                        ),
-                   actionButton('reloadInput',
-                                'Reload image',
-                                style = 'margin-left: 20%')
+                       actionButton(
+                           'negativeT',
+                           'Go!',
+                           style = 'margin-left: 6%'
+                       ),
+                       hr(),
+                       sliderInput(
+                           "degrees", 
+                           "Rotation:",
+                           min=-270, 
+                           max=270, 
+                           value=0
+                       ),
+                       hr(),
+                       h5('Mirroring:',
+                          style = 'font-weight: 700; text-align: center'
+                       ),
+                       fluidRow(
+                           actionButton('mirrorV',
+                                        'V',
+                                        style = 'margin-left: 2%'
+                           ),
+                           actionButton('mirrorH',
+                                        'H',
+                                        style = 'margin-left: 10%'
+                           )
+                       )
                    )
+                       )
+            
             ),
         hr(),
         tableOutput('hdr'),
@@ -51,38 +83,6 @@ ui <- shinyUI(
                        )
                    ),
             column(2,
-                   wellPanel(
-                       h5('Negative:',
-                          style = 'font-weight: 700; text-align: center'
-                          ),
-                       actionButton(
-                           'negativeT',
-                           'Go!',
-                           style = 'margin-left: 35%'
-                           ),
-                       hr(),
-                       sliderInput(
-                           "degrees", 
-                           "Rotation:",
-                           min=-270, 
-                           max=270, 
-                           value=0
-                           ),
-                       hr(),
-                       h5('Mirroring:',
-                           style = 'font-weight: 700; text-align: center'
-                           ),
-                       fluidRow(
-                       actionButton('mirrorV',
-                                    'V',
-                                    style = 'margin-left: 25%'
-                                    ),
-                       actionButton('mirrorH',
-                                    'H',
-                                    style = 'margin-left: 10%'
-                                    )
-                           )
-                   ),
                    downloadButton('exportImage',
                                       'Export')
                 )

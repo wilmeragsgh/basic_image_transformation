@@ -53,14 +53,14 @@ shinyServer(function(input, output) {
     
       output$images <- renderUI({
         if(is.null(input$files)) return(NULL)
-        if(input$reloadInput > 0){
-            image_output_list <- list(imageOutput('image1'))
-            do.call(tagList, image_output_list)  
-        } else
-            if(input$negativeT > 0){
-                image_output_list <- list(imageOutput('image1'))
-                do.call(tagList, image_output_list)  
-            } else
+        #if(input$reloadInput > 0){
+        #    image_output_list <- list(imageOutput('image1'))
+        #    do.call(tagList, image_output_list)  
+        #} else
+        #    if(input$negativeT > 0){
+        #        image_output_list <- list(imageOutput('image1'))
+        #        do.call(tagList, image_output_list)  
+        #    } else
           image_output_list <- list(imageOutput('image1'))
           do.call(tagList, image_output_list)
       })
