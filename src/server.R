@@ -3,8 +3,17 @@ library('Rcpp')
 #system('export PKG_CXXFLAGS=`Rscript -e "Rcpp:::CxxFlags()"`')
 #system('export PKG_LIBS=`Rscript -e "Rcpp:::LdFlags()"`')
 
-#system('R CMD SHLIB trial.cpp')
-dyn.load('../build/trial.so')
+# export PKG_LIBS=`pkg-config --libs opencv` `Rscript -e 'Rcpp:::LdFlags()'`
+# export PKG_CFLAGS=`pkg-config --cflags opencv`
+# export PKG_CXXFLAGS=`pkg-config --cflags opencv` `Rscript -e 'Rcpp:::CxxFlags()'`
+    # R CMD SHLIB build/negativeT.cpp
+Sys.setenv("PKG_LIBS" ="`pkg-config --libs opencv` `Rscript -e 'Rcpp:::LdFlags()'`")
+Sys.setenv("PKG_CFLAGS" ="`pkg-config --cflags opencv`")
+Sys.setenv("PKG_CXXFLAGS"="`pkg-config --cflags opencv` `Rscript -e 'Rcpp:::CxxFlags()'`")
+
+sourceCpp('../build/negativeT.cpp',verbose = T)
+
+#dyn.load('../build/negativeT.so')
 
 options(shiny.maxRequestSize=30*1024^2)
 
@@ -69,6 +78,7 @@ shinyServer(function(input, output) {
       observe({
           if(input$reloadInput == 0) return(NULL)
           local({
+              input$negative <- 0
               output[['image1']] <- 
                   renderImage({
                       list(src = files()$datapath,
@@ -81,8 +91,8 @@ shinyServer(function(input, output) {
       observe({
           if(input$negativeT == 0) return(NULL)
           local({
-              print(files()$datapath)
-              print(route <- .Call('readData',files()$datapath))
+              #print(files()$datapath)
+              #print(route <- readData(files()$datapath))
               output[['image1']] <- 
                   renderImage({
                       list(src = route,
