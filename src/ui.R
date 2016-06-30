@@ -3,46 +3,44 @@ ui <- shinyUI(
         tags$head(
             tags$style(
                 HTML("
+                    @import url('//fonts.googleapis.com/css?family=Lobster|Cabin:400,700');
                     .shiny-text-output {
                       background-color:#fff;
                     }
                     .table.data{
                     width: 100%;
                     }
-                    #exportImage{
-                    margin-left: 25%;
+                    #image1{
+                     max-height: 540px;
+                     height: 100% !important;
+                     width: 100%;
                     }")
                 )
             ),
-        h1("BIT", 
-            span("Basic Image Transformation", style = "font-weight: 300"), 
+        h1(span("Basic Image Transformation", 
+            style = "font-weight: 300; font-family: 'Lobster', cursive;"
+            ), 
             style = "font-family: 'Source Sans Pro';
                 color: #fff; text-align: center;
                 background-image: url('texturebg.png');
                 padding: 1%"
            ),
-        br(),
-        fluidRow(
-            column(5,
-                   offset = 0,
-                   sidebarPanel(
-                       width=6,
+        sidebarLayout(sidebarPanel(
+                       width=3,
                        style = 'align: center; text-align: center',
                        fileInput(inputId = 'files', 
                            label = 'Select an Image',
                            accept=c('image/bmp', 'image/bmp','.bmp')
                            ),
                        actionButton('reloadInput',
-                                    'Reload image',
-                                    style = 'margin-left: 2%'),
+                                    'Reload image'),
                        hr(),
                        h5('Negative:',
                           style = 'font-weight: 700; text-align: center'
                        ),
                        actionButton(
                            'negativeT',
-                           'Go!',
-                           style = 'margin-left: 6%'
+                           'Go!'
                        ),
                        hr(),
                        sliderInput(
@@ -58,34 +56,22 @@ ui <- shinyUI(
                        ),
                        fluidRow(
                            actionButton('mirrorV',
-                                        'V',
-                                        style = 'margin-left: 2%'
+                                        'V'
                            ),
                            actionButton('mirrorH',
-                                        'H',
-                                        style = 'margin-left: 10%'
+                                        'H'
                            )
-                       )
-                   )
-                       )
-            
-            ),
-        hr(),
-        tableOutput('hdr'),
-        fluidRow(
-            column(8,
-                   offset=1,
-                   wellPanel(
-                       uiOutput(
-                           'images',
-                           style = 'overflow: auto'
-                           )
-                       )
-                   ),
-            column(2,
-                   downloadButton('exportImage',
+                       ),
+                       hr(),
+                       downloadButton('exportImage',
                                       'Export')
-                )
-        )
+                   ),
+                   mainPanel(uiOutput(
+                       'images',
+                       style = 'overflow: auto;'
+                   ),width = 9
+            ))#,
+        #hr(),
+        #tableOutput('hdr')
     )
 )
