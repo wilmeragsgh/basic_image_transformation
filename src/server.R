@@ -1,5 +1,3 @@
-library('imager')
-library('parallel')
 library('Rcpp')
 
 #system('export PKG_CXXFLAGS=`Rscript -e "Rcpp:::CxxFlags()"`')

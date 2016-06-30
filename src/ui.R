@@ -14,8 +14,8 @@ ui <- shinyUI(
                     }")
                 )
             ),
-        h1("BIP", 
-            span("Basic Image Processing", style = "font-weight: 300"), 
+        h1("BIT", 
+            span("Basic Image Transformation", style = "font-weight: 300"), 
             style = "font-family: 'Source Sans Pro';
                 color: #fff; text-align: center;
                 background-image: url('texturebg.png');

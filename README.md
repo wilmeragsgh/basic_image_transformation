@@ -1,34 +1,68 @@
-# PDI homework-1
-Code related to the first homework of Digital Image Processing.
-Description of the submission at: 
-[Homework 1]('https://github.com/wilmeragsgh/pdi_homework-1/blob/master/doc/homework1.pdf')
-
-## Getting Started
-
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
+# Basic Image Transformations
+Shiny app for basic image transformation (negative,rotate,mirroring).
 
 ### Prerequisities
 
-The following conditions are the ones that ensure you could run this software, if you are aware of equivalent conditions, feel free of trying to run it on them, also you could contribute by sharing your environment with us and it will be very appreciate it. 
+The following code will install dependencies that ensure you could run this software, if you are aware of equivalent conditions, feel free of trying to run it on them, also you could contribute by sharing your environment with us and it will be very appreciate it. 
 
-
+#### Install r:
 ```
+#! /bin/bash
+
+sh -c 'echo "deb http://cran.rstudio.com/bin/linux/ubuntu trusty/" >> /etc/ap$
+gpg --keyserver keyserver.ubuntu.com --recv-key E084DAB9
+gpg -a --export E084DAB9 | sudo apt-key add -
+apt-get update
+apt-get install -y r-base r-base-dev
+```
+
+### Install image libraries:
+```
+#! /bin/bash
+
 apt-get install libtiff-devel fftw-devel
 apt-get install xorg libx11-dev
 apt-get install fftw3 
 apt-get install libopencv-dev
+
 ```
+
+#### Install R libraries:
+```
+#! /bin/bash
+
+R -e 'install.packages(c('shiny','Rcpp'))'
+```
+## Building from source
+
+As this app has a part on cpp you could compiled that part as follows (from build/ dir):
+
+```
+#! /bin/bash
+
+export PKG_CXXFLAGS=`Rscript -e "Rcpp:::CxxFlags()"`
+export PKG_LIBS=`Rscript -e "Rcpp:::LdFlags()"`
+
+R CMD SHLIB negativeT.cpp
+R CMD SHLIB mirrorT.cpp
+R CMD SHLIB rotateT.cpp
+```
+
 
 ## Deployment
 
-
+To run the app you just
 ```
 R -e "shiny::runGitHub('pdi_homework-1','wilmeragsgh',subdir = 'src')"
 ```
+Then you should see:
+```
+Loading required package: shiny
 
-Add additional notes about how to deploy this on a live system
+Listening on http://127.0.0.1:PORT
 
-To get the system up running
+```
+Which means you can now look for the app on that address. Enjoy!
 
 ## Built With
 
@@ -48,4 +82,3 @@ This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md
 ## Acknowledgments
 
 * Prof. Esmitt Ramirez
-

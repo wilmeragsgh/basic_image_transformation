@@ -4,8 +4,11 @@
 #include <stdlib.h>  
 #include <stdio.h>  
 #include <math.h>  
-#include <cv.h>  
-#include <highgui.h> 
+#include <opencv2/opencv.hpp>  
+//#include <highgui.h> 
+#include "opencv2/highgui/highgui.hpp"
+
+using namespace cv;
 
 RcppExport SEXP readData(SEXP f1) {
     std::string fname = Rcpp::as<std::string>(f1); 
@@ -16,10 +19,10 @@ RcppExport SEXP readData(SEXP f1) {
     uchar *data;  
     int i,j,k;  
     // Load image   
-    img=cvLoadImage(argv[1],-1);  
+    img=cvLoadImage(fname.c_str(),-1);  
     if(!img)  
     {  
-        printf("Could not load image file: %s\n",argv[1]);  
+        printf("Could not load image file\n");  
         exit(0);  
     }  
     // acquire image info  
@@ -33,7 +36,10 @@ RcppExport SEXP readData(SEXP f1) {
         for(j=0;j<width;j++)   
             for(k=0;k<channels;k++)  
                 data[i*step+j*channels+k]=255-data[i*step+j*channels+k];  
-    imwrite("test.bmp", img);    
-    Rcpp::CharacterVector rline = Rcpp::wrap('test.bmp');
+    //imwrite("test.bmp", &img);    
+    namedWindow("image", WINDOW_AUTOSIZE);
+    imshow("image", img);
+    waitKey(30);
+    Rcpp::CharacterVector rline = Rcpp::wrap("test.bmp");
     return rline;
 }
