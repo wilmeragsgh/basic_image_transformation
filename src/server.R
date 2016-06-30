@@ -44,6 +44,10 @@ shinyServer(function(input, output) {
         headr <- cbind(headr,impColors = readBin(arc,what = integer(),size = 4))
         close(arc)
         output$hdr <- renderTable(as.data.frame(headr))
+        files$negativeTransfCount <- input$negativeT
+        files$mirrorHTransfCount <- input$mirrorH
+        files$mirrorVTransfCount <- input$mirrorV
+        files$rotateTransCount <- input$degrees
         files
     })
     
@@ -78,7 +82,6 @@ shinyServer(function(input, output) {
       observe({
           if(input$reloadInput == 0) return(NULL)
           local({
-              input$negative <- 0
               output[['image1']] <- 
                   renderImage({
                       list(src = files()$datapath,
@@ -93,6 +96,7 @@ shinyServer(function(input, output) {
           local({
               #print(files()$datapath)
               #print(route <- readData(files()$datapath))
+              route <- negativeTransformation(files()$datapath)
               output[['image1']] <- 
                   renderImage({
                       list(src = route,

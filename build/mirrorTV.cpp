@@ -9,11 +9,11 @@
 
 using namespace cv;
 // [[Rcpp::export]]
-RcppExport SEXP negativeTransformation(SEXP f1) {
+RcppExport SEXP mirrorTransformationV(SEXP f1) {
     std::string fname = Rcpp::as<std::string>(f1); 
     std::ifstream fi;
     fi.open(fname.c_str(),std::ios::in);
-    IplImage* img = 0;   
+    IplImage* img = 0;
     int height,width,step,channels;  
     uchar *data;  
     int i,j,k;  
@@ -39,7 +39,7 @@ RcppExport SEXP negativeTransformation(SEXP f1) {
     Mat im = img;
     unsigned sz = fname.size();
     fname.resize(sz-4); // removin .bmp from the name to add transformation file
-    std::string transformName ("_negative");
+    std::string transformName ("_mirrorVer");
     std::string formatName (".bmp");
     std::string outputname = fname.c_str() + transformName + formatName;
     imwrite(outputname, im);    

@@ -32,7 +32,10 @@ ui <- shinyUI(
                            label = 'Select an Image',
                            accept=c('image/bmp', 'image/bmp','.bmp')
                            )
-                       )
+                       ),
+                   actionButton('reloadInput',
+                                'Reload image',
+                                style = 'margin-left: 20%')
                    )
             ),
         hr(),
@@ -48,10 +51,6 @@ ui <- shinyUI(
                        )
                    ),
             column(2,
-                   actionButton('reloadInput',
-                                'Reload image',
-                                style = 'margin-left: 20%'),
-                   hr(),
                    wellPanel(
                        h5('Negative:',
                           style = 'font-weight: 700; text-align: center'
@@ -74,11 +73,11 @@ ui <- shinyUI(
                            style = 'font-weight: 700; text-align: center'
                            ),
                        fluidRow(
-                       actionButton('MirrorV',
+                       actionButton('mirrorV',
                                     'V',
                                     style = 'margin-left: 25%'
                                     ),
-                       actionButton('MirrorH',
+                       actionButton('mirrorH',
                                     'H',
                                     style = 'margin-left: 10%'
                                     )
