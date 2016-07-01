@@ -33,14 +33,16 @@ ui <- shinyUI(
                            accept=c('image/bmp', 'image/bmp','.bmp')
                            ),
                        actionButton('reloadInput',
-                                    'Reload image'),
+                                    'Reload image',
+                                    icon = icon('refresh')),
                        hr(),
                        h5('Negative:',
                           style = 'font-weight: 700; text-align: center'
                        ),
                        actionButton(
                            'negativeT',
-                           'Go!'
+                           'Go!',
+                           icon = icon('adjust')
                        ),
                        hr(),
                        sliderInput(
@@ -63,9 +65,12 @@ ui <- shinyUI(
                            )
                        ),
                        hr(),
-                           textInput("text", value = "filename",label = NULL,placeholder = 'name without extension',width ='40%'),
+                       h6('Save to ./output.bmp:',
+                          style = 'font-weight: 700; text-align: center'
+                       ),
                            actionButton('exportImage',
-                                      'Save in workdir!')
+                                      '',
+                                      icon = icon('archive'),width = "30%")
                    ),
                    mainPanel(uiOutput(
                        'images',

@@ -9,13 +9,14 @@
 
 using namespace cv;
 // [[Rcpp::export]]
-RcppExport SEXP mirrorTransformationHor(SEXP f1) {
+RcppExport SEXP mirrorTransformationH(SEXP f1) {
     std::string fname = Rcpp::as<std::string>(f1); 
     std::ifstream fi;
     fi.open(fname.c_str(),std::ios::in);
     IplImage* img = 0;
     int height,width,step,channels;  
-    uchar *data;  
+    uchar *data;
+    uchar *data1;
     int i,j,k;  
     // Load image   
     img=cvLoadImage(fname.c_str(),-1);  
@@ -25,21 +26,23 @@ RcppExport SEXP mirrorTransformationHor(SEXP f1) {
         exit(0);  
     }  
     // acquire image info  
-    height    = img->height;    
-    width     = img->width;    
-    step      = img->widthStep;    
-    channels  = img->nChannels;  
-    data      = (uchar *)img->imageData;  
+    height = img->height;    
+    width = img->width;    
+    step  = img->widthStep;    
+    channels = img->nChannels;  
+    data = (uchar *)img->imageData;
+    IplImage* img1 = img;
+    data1 = (uchar *)img1->imageData;
     // reverse image 
     for(i=0;i<height;i++)   
         for(j=0;j<width;j++)   
             for(k=0;k<channels;k++)  
-                data[i*step+j*channels+k]=255-data[i*step+j*channels+k];  
+                data[i*step+j*channels+k]=data1[i*step+(width - j)*channels+k];  
     //namedWindow("test.bmp", CV_WINDOW_AUTOSIZE );
     Mat im = img;
     unsigned sz = fname.size();
     fname.resize(sz-4); // removin .bmp from the name to add transformation file
-    std::string transformName ("_negative");
+    std::string transformName ("_mirrorVer");
     std::string formatName (".bmp");
     std::string outputname = fname.c_str() + transformName + formatName;
     imwrite(outputname, im);    

@@ -12,7 +12,8 @@ Sys.setenv("PKG_CFLAGS" ="`pkg-config --cflags opencv`")
 Sys.setenv("PKG_CXXFLAGS"="`pkg-config --cflags opencv` `Rscript -e 'Rcpp:::CxxFlags()'`")
 
 sourceCpp('../build/negativeT.cpp',verbose = T)
-
+sourceCpp('../build/mirrorTV.cpp',verbose = T)
+sourceCpp('../build/mirrorTH.cpp',verbose = T)
 #dyn.load('../build/negativeT.so')
 
 options(shiny.maxRequestSize=40*1024^2)
@@ -106,12 +107,42 @@ shinyServer(function(input, output) {
                   }, deleteFile = F)
           })
       })
-#/      
+#/
+# image mirrorV:
+      observe({
+          if(input$mirrorV == 0 || is.null(input$files)) return(NULL)
+          route <- mirrorTransformationV(get('currentImage',envir = e1))
+          assign('currentImage',value = route,envir = e1)
+          local({
+              #print(route)
+              output[['image1']] <- 
+                  renderImage({
+                      list(src = route,
+                           alt = "Image failed to render")
+                  }, deleteFile = F)
+          })
+      })
+#/
+# image mirrorH:
+      observe({
+          if(input$mirrorH == 0 || is.null(input$files)) return(NULL)
+          route <- mirrorTransformationH(get('currentImage',envir = e1))
+          assign('currentImage',value = route,envir = e1)
+          local({
+              #print(route)
+              output[['image1']] <- 
+                  renderImage({
+                      list(src = route,
+                           alt = "Image failed to render")
+                  }, deleteFile = F)
+          })
+      })
+#/
 # downloader:
       observe({
           if(input$exportImage == 0) return(NULL)
           local({
-              comm <- paste('cp ',get('currentImage',envir = e1),' ./',input$text,'.bmp',sep = '')
+              comm <- paste('cp ',get('currentImage',envir = e1),' ./output.bmp',sep = '')
               system(command = comm)
           })
       })
