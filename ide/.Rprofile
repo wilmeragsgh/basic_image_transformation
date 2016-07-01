@@ -49,7 +49,7 @@ attach(.env)
 	# library(ggplot2)
 	cat("\nSuccessfully loaded .Rprofile at", date(), "\n")
         cat('...It means there is cool stuff at ls(.env) \n')
-        setwd('..')
+        setwd('../src')
 }
 
 ## .Last() run at the end of the session

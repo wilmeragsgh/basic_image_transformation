@@ -50,7 +50,8 @@ ui <- shinyUI(
                            "Rotation:",
                            min=-270, 
                            max=270, 
-                           value=0
+                           value=0,
+                           step = 90
                        ),
                        hr(),
                        h5('Mirroring:',
@@ -58,10 +59,12 @@ ui <- shinyUI(
                        ),
                        fluidRow(
                            actionButton('mirrorV',
-                                        'V'
+                                        'V',
+                                        icon = icon('arrows-v')
                            ),
                            actionButton('mirrorH',
-                                        'H'
+                                        'H',
+                                        icon = icon('arrows-h')
                            )
                        ),
                        hr(),
@@ -76,8 +79,8 @@ ui <- shinyUI(
                        'images',
                        style = 'overflow: auto;'
                    ),width = 9
-            ))#,
-        #hr(),
-        #tableOutput('hdr')
+            )),
+        hr(),
+        tableOutput('hdr')
     )
 )

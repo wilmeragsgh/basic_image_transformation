@@ -31,10 +31,11 @@ RcppExport SEXP negativeTransformation(SEXP f1) {
     channels  = img->nChannels;  
     data      = (uchar *)img->imageData;  
     // reverse image 
+    #pragma omp parallel for collapse(3)
     for(i=0;i<height;i++)   
         for(j=0;j<width;j++)   
             for(k=0;k<channels;k++)  
-                data[i*step+j*channels+k]=255-data[i*step+j*channels+k];  
+                data[i*step+j*channels+k]=255-data[i*step+j*channels+k];
     //namedWindow("test.bmp", CV_WINDOW_AUTOSIZE );
     Mat im = img;
     unsigned sz = fname.size();

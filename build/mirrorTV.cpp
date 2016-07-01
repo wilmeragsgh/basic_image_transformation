@@ -2,7 +2,8 @@
 #include <fstream>
 #include <string>
 #include <stdlib.h>  
-#include <stdio.h>  
+#include <stdio.h>
+#include <cmath>
 #include <math.h>  
 #include <opencv2/opencv.hpp>  
 #include "opencv2/highgui/highgui.hpp"
@@ -33,7 +34,8 @@ RcppExport SEXP mirrorTransformationV(SEXP f1) {
     data = (uchar *)img->imageData;
     IplImage* img1 = img;
     data1 = (uchar *)img1->imageData;
-    // reverse image 
+    // reverse image
+    #pragma omp parallel for collapse(3)
     for(i=0;i<height;i++)   
         for(j=0;j<width;j++)   
             for(k=0;k<channels;k++)  
