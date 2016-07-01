@@ -63,8 +63,9 @@ ui <- shinyUI(
                            )
                        ),
                        hr(),
-                       downloadButton('exportImage',
-                                      'Export')
+                           textInput("text", value = "filename",label = NULL,placeholder = 'name without extension',width ='40%'),
+                           actionButton('exportImage',
+                                      'Save in workdir!')
                    ),
                    mainPanel(uiOutput(
                        'images',

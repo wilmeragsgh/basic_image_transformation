@@ -15,8 +15,8 @@ sourceCpp('../build/negativeT.cpp',verbose = T)
 
 #dyn.load('../build/negativeT.so')
 
-options(shiny.maxRequestSize=30*1024^2)
-
+options(shiny.maxRequestSize=40*1024^2)
+e1 <- new.env(parent = .GlobalEnv)
 shinyServer(function(input, output) {
 
 # reading image:
@@ -44,10 +44,10 @@ shinyServer(function(input, output) {
         headr <- cbind(headr,impColors = readBin(arc,what = integer(),size = 4))
         close(arc)
         output$hdr <- renderTable(as.data.frame(headr))
-        files$negativeTransfCount <- input$negativeT
-        files$mirrorHTransfCount <- input$mirrorH
-        files$mirrorVTransfCount <- input$mirrorV
-        files$rotateTransCount <- input$degrees
+        #files$negativeTransfCount <- input$negativeT
+        #files$mirrorHTransfCount <- input$mirrorH
+        #files$mirrorVTransfCount <- input$mirrorV
+        #files$rotateTransCount <- input$degrees
         files
     })
     
@@ -67,6 +67,7 @@ shinyServer(function(input, output) {
       
       observe({
           if(is.null(input$files)) return(NULL)
+          assign('currentImage',value = files()$datapath,envir = e1)
           local({
               output[['image1']] <- 
                   renderImage({
@@ -76,12 +77,12 @@ shinyServer(function(input, output) {
           })
       })
 
-# processing transformation:
-
 # reload image:      
       observe({
-          if(input$reloadInput == 0) return(NULL)
+          if(input$reloadInput == 0 || is.null(input$files)) return(NULL)
+          assign('currentImage',value = files()$datapath,envir = e1)
           local({
+              #
               output[['image1']] <- 
                   renderImage({
                       list(src = files()$datapath,
@@ -90,13 +91,14 @@ shinyServer(function(input, output) {
           })
       })
 #/      
+# processing transformation:
 # image negative:
       observe({
-          if(input$negativeT == 0) return(NULL)
+          if(input$negativeT == 0 || is.null(input$files)) return(NULL)
+          route <- negativeTransformation(get('currentImage',envir = e1))
+          assign('currentImage',value = route,envir = e1)
           local({
-              #print(files()$datapath)
-              #print(route <- readData(files()$datapath))
-              route <- negativeTransformation(files()$datapath)
+              #print(route)
               output[['image1']] <- 
                   renderImage({
                       list(src = route,
@@ -104,35 +106,14 @@ shinyServer(function(input, output) {
                   }, deleteFile = F)
           })
       })
-      
+#/      
 # downloader:
-      output$exportImage <- downloadHandler(
-          filename = function() { 
-              paste(
-                  unlist(
-                      strsplit(
-                          tail(
-                              unlist(
-                                  strsplit(input$files$datapath,
-                                           split = '/'
-                                  )
-                              ),
-                              n = 1
-                          ),
-                          split = '.',
-                          fixed = T
-                      )
-                  )[1],
-                  '_Processed',
-                  '.bmp', 
-                  sep='') 
-          },
-          content = function(file) {
-              imgInput <- load.image(input$files$datapath)
-              bmp(file)
-              plot(imgInput)
-              dev.off()
-          }
-      )
+      observe({
+          if(input$exportImage == 0) return(NULL)
+          local({
+              comm <- paste('cp ',get('currentImage',envir = e1),' ./',input$text,'.bmp',sep = '')
+              system(command = comm)
+          })
+      })
 #/
     })
