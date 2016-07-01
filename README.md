@@ -33,22 +33,6 @@ apt-get install libopencv-dev
 
 R -e 'install.packages(c('shiny','Rcpp'))'
 ```
-## Building from source
-
-As this app has a part on cpp you could compiled that part as follows (from build/ dir):
-
-```
-#! /bin/bash
-
-export PKG_CXXFLAGS=`Rscript -e "Rcpp:::CxxFlags()"`
-export PKG_LIBS=`Rscript -e "Rcpp:::LdFlags()"`
-
-R CMD SHLIB negativeT.cpp
-R CMD SHLIB mirrorT.cpp
-R CMD SHLIB rotateT.cpp
-```
-
-
 ## Deployment
 
 To run the app you just
@@ -62,7 +46,8 @@ Loading required package: shiny
 Listening on http://127.0.0.1:PORT
 
 ```
-Which means you can now look for the app on that address. Enjoy!
+But wait for it while compiling
+...then Enjoy!
 
 ## Built With
 
