@@ -12,7 +12,7 @@ Sys.setenv("PKG_CFLAGS" ="`pkg-config --cflags opencv`")
 Sys.setenv("PKG_CXXFLAGS"="`pkg-config --cflags opencv` `Rscript -e 'Rcpp:::CxxFlags()' -fopenmp`")
 
 cat('Wait for it...')
-sourceCpp('..build/negativeT.cpp')
+sourceCpp('../build/negativeT.cpp',)
 sourceCpp('../build/mirrorTV.cpp')
 sourceCpp('../build/mirrorTH.cpp')
 sourceCpp('../build/rotateT.cpp')
