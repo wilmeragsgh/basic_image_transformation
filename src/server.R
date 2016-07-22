@@ -1,22 +1,30 @@
 library('Rcpp')
 
-#system('export PKG_CXXFLAGS=`Rscript -e "Rcpp:::CxxFlags()"`')
-#system('export PKG_LIBS=`Rscript -e "Rcpp:::LdFlags()"`')
-
-# export PKG_LIBS=`pkg-config --libs opencv` `Rscript -e 'Rcpp:::LdFlags()'`
-# export PKG_CFLAGS=`pkg-config --cflags opencv`
-# export PKG_CXXFLAGS=`pkg-config --cflags opencv` `Rscript -e 'Rcpp:::CxxFlags()'`
-    # R CMD SHLIB build/negativeT.cpp
-Sys.setenv("PKG_LIBS" ="`pkg-config --libs opencv` `Rscript -e 'Rcpp:::LdFlags()' -fopenmp -lgomp`")
-Sys.setenv("PKG_CFLAGS" ="`pkg-config --cflags opencv`")
-Sys.setenv("PKG_CXXFLAGS"="`pkg-config --cflags opencv` `Rscript -e 'Rcpp:::CxxFlags()' -fopenmp`")
-
+##system("export PKG_LIBS=`pkg-config --libs opencv` `R -e 'Rcpp:::LdFlags()' -fopenmp -lgomp`")
+##system("export PKG_CFLAGS=`pkg-config --cflags opencv`")
+##system("export PKG_CXXFLAGS=`pkg-config --cflags opencv` `R -e 'Rcpp:::CxxFlags()' -fopenmp`")
+#Sys.setenv("PKG_LIBS" ="`pkg-config --libs opencv` `Rscript -e 'Rcpp:::LdFlags()' -fopenmp -lgomp`")
+#Sys.setenv("PKG_CFLAGS" ="`pkg-config --cflags opencv`")
+#Sys.setenv("PKG_CXXFLAGS"="`pkg-config --cflags opencv` `Rscript -e 'Rcpp:::CxxFlags()' -fopenmp`")
+#system("R CMD SHLIB ../build/negativeT.cpp")
+#system("R CMD SHLIB ../build/mirrorTV.cpp")
+#system("R CMD SHLIB ../build/mirrorTH.cpp")
+#system("R CMD SHLIB ../build/rotateT.cpp")
 cat('Wait for it...')
-sourceCpp('../build/negativeT.cpp',)
-sourceCpp('../build/mirrorTV.cpp')
-sourceCpp('../build/mirrorTH.cpp')
-sourceCpp('../build/rotateT.cpp')
+setwd('..')
+dyn.load('build/negativeT.so')
+dyn.load('build/mirrorTV.so')
+dyn.load('build/mirrorTH.so')
+dyn.load('build/rotateT.so')
+setwd('src')
+
+#cat('Wait for it...')
+#sourceCpp('../build/negativeT.cpp')
+#sourceCpp('../build/mirrorTV.cpp')
+#sourceCpp('../build/mirrorTH.cpp')
+#sourceCpp('../build/rotateT.cpp')
 cat('it\'s alive!')
+
 #dyn.load('../build/negativeT.so')
 
 options(shiny.maxRequestSize=40*1024^2)
@@ -99,7 +107,7 @@ shinyServer(function(input, output) {
 # image negative:
       observe({
           if(input$negativeT == 0 || is.null(input$files)) return(NULL)
-          route <- negativeTransformation(get('currentImage',envir = e1))
+          route <- .Call('negativeTransformation',get('currentImage',envir = e1))
           assign('currentImage',value = route,envir = e1)
           local({
               #print(route)
@@ -114,7 +122,7 @@ shinyServer(function(input, output) {
 # image mirrorV:
       observe({
           if(input$mirrorV == 0 || is.null(input$files)) return(NULL)
-          route <- mirrorTransformationV(get('currentImage',envir = e1))
+          route <- .Call('mirrorTransformationV',get('currentImage',envir = e1))
           assign('currentImage',value = route,envir = e1)
           local({
               #print(route)
@@ -129,7 +137,7 @@ shinyServer(function(input, output) {
 # image mirrorH:
       observe({
           if(input$mirrorH == 0 || is.null(input$files)) return(NULL)
-          route <- mirrorTransformationH(get('currentImage',envir = e1))
+          route <- .Call('mirrorTransformationH',get('currentImage',envir = e1))
           assign('currentImage',value = route,envir = e1)
           local({
               #print(route)
@@ -147,7 +155,7 @@ shinyServer(function(input, output) {
           dg <- input$degrees
           trueDegree <- ifelse(dg <0,dg + 360,dg)
           nSteps <- trueDegree/90
-          route <- rotateTransformation(get('currentImage',envir = e1),nSteps)
+          route <- .Call('rotateTransformation',get('currentImage',envir = e1),nSteps)
           assign('currentImage',value = route,envir = e1)
           local({
               #print(route)
